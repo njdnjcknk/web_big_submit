@@ -1,12 +1,13 @@
 $(function() {
-    $("#link-reg").on("click", function() {
+    $("#link_reg").on("click", function() {
         $(".login-box").hide().siblings(".reg-box").show()
     })
-    $("#link-login").on("click", function() {
+    $("#link_login").on("click", function() {
             $(".reg-box").hide().siblings(".login-box").show()
         })
         // 从layui里面获取from
     var form = layui.form
+    var layer = layui.layer
         // 通过from.verify()函数自定义规则
     form.verify({
         // 定义了一个pwd的规则
@@ -23,18 +24,37 @@ $(function() {
     });
 
     $("#form_reg").on("submit", function(e) {
-
         e.preventDefault()
+        var data = {
+            username: $(".reg-box [name=username]").val(),
+            password: $(".reg-box [name=password]").val(),
+            repassword: $(".reg-box [name=repassword]").val()
+        }
         $.ajax({
             method: "POST",
-            url: " http://www.liulongbin.top:3008/api/reg",
-            data: {
-                username = $("#form_reg [name=username]").val(),
-                password = $("#form_reg [name=password]").val(),
-                repassword = $("#form_reg [name=repassword]").val()
-            },
+            url: "/api/reg",
+            data: data,
             success: function(res) {
                 console.log(res);
+                if (res.code !== 0) return layer.msg(res.message)
+                layer.msg(res.message)
+                $("#link_login").click()
+            }
+        });
+    })
+    $("#form_login").submit(function(e) {
+        // console.log($(this).serialize());
+        e.preventDefault()
+        $.ajax({
+            method: "post",
+            url: "/api/login",
+            data: $(this).serialize(),
+            success: function(res) {
+                console.log(res);
+                if (res.code !== 0) return layer.msg(res.message)
+                layer.msg(res.message)
+                localStorage.setItem("token", res.token)
+                window.open("/index.html", "_blank");
             }
         });
     })
