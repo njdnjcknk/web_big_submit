@@ -1,9 +1,9 @@
 $(function() {
-    $("#link_reg").on("click", function() {
+    $("#link-reg").on("click", function() {
         $(".login-box").hide().siblings(".reg-box").show()
     })
-    $("#link_login").click(function() {
-            $(".login-box").show().siblings(".reg-box").hide()
+    $("#link-login").on("click", function() {
+            $(".reg-box").hide().siblings(".login-box").show()
         })
         // 从layui里面获取from
     var form = layui.form
@@ -20,5 +20,22 @@ $(function() {
                 return "俩次密码不一致"
             }
         }
+    });
+
+    $("#form_reg").on("submit", function(e) {
+
+        e.preventDefault()
+        $.ajax({
+            method: "POST",
+            url: " http://www.liulongbin.top:3008/api/reg",
+            data: {
+                username = $("#form_reg [name=username]").val(),
+                password = $("#form_reg [name=password]").val(),
+                repassword = $("#form_reg [name=repassword]").val()
+            },
+            success: function(res) {
+                console.log(res);
+            }
+        });
     })
-})
+});
